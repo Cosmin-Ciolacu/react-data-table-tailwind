@@ -4,16 +4,9 @@ This project is a React component for displaying data in a table format, styled 
 
 ## Installation
 
-1. Clone the repository:
-
+1. Install dependencies:
    ```sh
-   git clone https://github.com/your-username/react-data-table-tailwind.git
-   cd react-data-table-tailwind
-   ```
-
-2. Install dependencies:
-   ```sh
-   npm install
+   npm i react-data-table-tailwind
    ```
 
 ## Usage

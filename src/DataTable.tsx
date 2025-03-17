@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { DataTableProps } from "./types";
 import { useState } from "react";
-import { ClipLoader } from "react-spinners";
+import Spinner from "./components/Spinner";
 
 export default function DataTable<T>({
   columns,
@@ -30,9 +30,7 @@ export default function DataTable<T>({
     >
       <div className="overflow-x-auto">
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <ClipLoader color={dark ? "#ffffff" : "#000000"} />
-          </div>
+          <Spinner />
         ) : (
           <>
             <table
