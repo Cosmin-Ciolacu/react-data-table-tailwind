@@ -39,7 +39,7 @@ export default function DataTable<T>({
         ) : (
           <>
             <table
-              className={classNames("min-w-full divide-y", {
+              className={classNames("w-full divide-y", {
                 "divide-gray-700": dark,
                 "divide-gray-200": !dark,
               })}
