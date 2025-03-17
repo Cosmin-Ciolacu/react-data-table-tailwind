@@ -11,6 +11,7 @@ export default function DataTable<T>({
   totalPages,
   onPageChange,
   dark = false,
+  containerClassName,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -23,10 +24,14 @@ export default function DataTable<T>({
 
   return (
     <div
-      className={classNames("mt-8 p-4 rounded-lg shadow-md", {
-        "bg-gray-800": dark,
-        "bg-white": !dark,
-      })}
+      className={classNames(
+        containerClassName,
+        "mt-8 p-4 rounded-lg shadow-md",
+        {
+          "bg-gray-800": dark,
+          "bg-white": !dark,
+        }
+      )}
     >
       <div className="overflow-x-auto">
         {loading ? (

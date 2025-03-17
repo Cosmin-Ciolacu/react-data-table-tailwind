@@ -14,4 +14,5 @@ export type DataTableProps<T> = {
   totalPages?: number;
   onPageChange?: (page: number) => void;
   dark?: boolean;
+  containerClassName?: string;
 };
