@@ -33,7 +33,7 @@ export default function DataTable<T>({
         }
       )}
     >
-      <div className="w-full overflow-x-auto">
+      <div className="w-full !overflow-x-auto">
         {loading ? (
           <Spinner />
         ) : (
