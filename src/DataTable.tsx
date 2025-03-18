@@ -33,89 +33,87 @@ export default function DataTable<T>({
         }
       )}
     >
-      <div className="overflow-x-auto">
+      <div className="w-full overflow-x-auto">
         {loading ? (
           <Spinner />
         ) : (
           <>
-            <div className="min-w-full inline-block align-middle">
-              <table
-                className={classNames("min-w-full divide-y", {
-                  "divide-gray-700": dark,
-                  "divide-gray-200": !dark,
+            <table
+              className={classNames("w-full divide-y", {
+                "divide-gray-700": dark,
+                "divide-gray-200": !dark,
+              })}
+            >
+              <thead
+                className={classNames("rounded-lg", {
+                  "bg-gray-700": dark,
+                  "bg-gray-200": !dark,
                 })}
               >
-                <thead
-                  className={classNames("rounded-lg", {
-                    "bg-gray-700": dark,
-                    "bg-gray-200": !dark,
-                  })}
-                >
+                <tr>
+                  {columns.map((column) => (
+                    <th
+                      key={column.accessor as string}
+                      className={classNames(
+                        "px-6 py-3 text-left text-xs font-medium uppercase tracking-wider",
+                        {
+                          "text-gray-300": dark,
+                          "text-gray-700": !dark,
+                        }
+                      )}
+                    >
+                      {column.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody
+                className={classNames({
+                  "bg-gray-800 divide-y divide-gray-700": dark,
+                  "bg-white divide-y divide-gray-200": !dark,
+                })}
+              >
+                {data.length === 0 ? (
                   <tr>
-                    {columns.map((column) => (
-                      <th
-                        key={column.accessor as string}
-                        className={classNames(
-                          "px-6 py-3 text-left text-xs font-medium uppercase tracking-wider",
-                          {
-                            "text-gray-300": dark,
-                            "text-gray-700": !dark,
-                          }
-                        )}
-                      >
-                        {column.header}
-                      </th>
-                    ))}
+                    <td
+                      colSpan={columns.length}
+                      className={classNames(
+                        "px-6 py-4 whitespace-nowrap text-center text-sm",
+                        {
+                          "text-gray-400": dark,
+                          "text-gray-500": !dark,
+                        }
+                      )}
+                    >
+                      No data found
+                    </td>
                   </tr>
-                </thead>
-                <tbody
-                  className={classNames({
-                    "bg-gray-800 divide-y divide-gray-700": dark,
-                    "bg-white divide-y divide-gray-200": !dark,
-                  })}
-                >
-                  {data.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={columns.length}
-                        className={classNames(
-                          "px-6 py-4 whitespace-nowrap text-center text-sm",
-                          {
-                            "text-gray-400": dark,
-                            "text-gray-500": !dark,
-                          }
-                        )}
-                      >
-                        No data found
-                      </td>
+                ) : (
+                  data.map((item, index) => (
+                    <tr key={index}>
+                      {columns.map((column) => (
+                        <td
+                          key={column.accessor as string}
+                          className={classNames(
+                            "px-6 py-4 whitespace-nowrap text-sm",
+                            {
+                              "text-gray-300": dark,
+                              "text-gray-700": !dark,
+                            }
+                          )}
+                        >
+                          {column.renderRow
+                            ? column.renderRow(item)
+                            : String(item[column.accessor])}
+                        </td>
+                      ))}
                     </tr>
-                  ) : (
-                    data.map((item, index) => (
-                      <tr key={index}>
-                        {columns.map((column) => (
-                          <td
-                            key={column.accessor as string}
-                            className={classNames(
-                              "px-6 py-4 whitespace-nowrap text-sm",
-                              {
-                                "text-gray-300": dark,
-                                "text-gray-700": !dark,
-                              }
-                            )}
-                          >
-                            {column.renderRow
-                              ? column.renderRow(item)
-                              : String(item[column.accessor])}
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
             {usePagination && (
-              <div className="flex justify-between items-center mt-4">
+              <div className="w-full flex justify-between items-center mt-4">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}

@@ -1,12 +1,17 @@
 {
   "name": "react-data-table-tailwind",
   "version": "1.0.4",
-  "description": "",
+  "description": "A simple data table component for React with TailwindCSS",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "tailwindcss",
+    "data-table",
+    "react-data-table"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
