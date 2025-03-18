@@ -113,7 +113,7 @@ export default function DataTable<T>({
               </tbody>
             </table>
             {usePagination && (
-              <div className="w-full flex justify-between items-center mt-4">
+              <div className="flex justify-between items-center mt-4">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
