@@ -1,7 +1,7 @@
 type DataTableColumns<T> = {
   header: string;
   accessor: keyof T;
-  renderRow?: (item: T) => React.ReactNode;
+  renderRow?: (item: T, index?: number) => React.ReactNode;
 };
 
 export type Columns<T> = DataTableColumns<T>[];

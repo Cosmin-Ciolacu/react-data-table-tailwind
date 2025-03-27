@@ -103,7 +103,7 @@ export default function DataTable<T>({
                           )}
                         >
                           {column.renderRow
-                            ? column.renderRow(item)
+                            ? column.renderRow(item, index)
                             : String(item[column.accessor])}
                         </td>
                       ))}
