@@ -14,6 +14,28 @@ export default function DataTable<T>({
   containerClassName,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [filteredData, setFilteredData] = useState<T[]>(data);
+  const [searchValues, setSearchValues] = useState<Record<string, string>>({});
+
+  const handleSearchChange = (accessor: string, value: string) => {
+    setSearchValues((prev) => ({ ...prev, [accessor]: value }));
+    const column = columns.find((col) => col.accessor === accessor);
+    if (column && column.onSearch) {
+      column.onSearch(accessor as keyof T, value);
+    } else {
+      const filteredData = data.filter((item) =>
+        String(item[accessor as keyof T])
+          .toLowerCase()
+          .includes(value.toLowerCase())
+      );
+      setSearchValues((prev) => ({ ...prev, [accessor]: value }));
+      if (onPageChange) {
+        onPageChange(1); // Reset to first page on search
+      }
+      // Update the data state with filteredData if needed
+      setFilteredData(filteredData);
+    }
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -53,7 +75,7 @@ export default function DataTable<T>({
                 <tr>
                   {columns.map((column) => (
                     <th
-                      key={column.accessor as string}
+                      key={String(column.accessor)}
                       className={classNames(
                         "px-6 py-3 text-left text-xs font-medium uppercase tracking-wider",
                         {
@@ -62,7 +84,31 @@ export default function DataTable<T>({
                         }
                       )}
                     >
-                      {column.header}
+                      <div className="flex flex-col">
+                        <span>{column.header}</span>
+                        {column.searchable && (
+                          <input
+                            type="text"
+                            placeholder={`Search ${column.header}`}
+                            value={searchValues[String(column.accessor)] || ""}
+                            onChange={(e) =>
+                              handleSearchChange(
+                                column.accessor as string,
+                                e.target.value
+                              )
+                            }
+                            className={classNames(
+                              "mt-2 px-2 py-1 text-sm rounded border",
+                              {
+                                "bg-gray-900 text-gray-300 border-gray-600":
+                                  dark,
+                                "bg-gray-100 text-gray-700 border-gray-300":
+                                  !dark,
+                              }
+                            )}
+                          />
+                        )}
+                      </div>
                     </th>
                   ))}
                 </tr>
@@ -73,7 +119,7 @@ export default function DataTable<T>({
                   "bg-white divide-y divide-gray-200": !dark,
                 })}
               >
-                {data.length === 0 ? (
+                {filteredData.length === 0 ? (
                   <tr>
                     <td
                       colSpan={columns.length}
@@ -89,7 +135,7 @@ export default function DataTable<T>({
                     </td>
                   </tr>
                 ) : (
-                  data.map((item, index) => (
+                  filteredData.map((item, index) => (
                     <tr key={index}>
                       {columns.map((column) => (
                         <td
@@ -104,7 +150,7 @@ export default function DataTable<T>({
                         >
                           {column.renderRow
                             ? column.renderRow(item, index)
-                            : String(item[column.accessor])}
+                            : String(item[column.accessor as keyof T])}
                         </td>
                       ))}
                     </tr>
