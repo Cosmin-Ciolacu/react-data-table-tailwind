@@ -1,6 +1,6 @@
 {
   "name": "react-data-table-tailwind",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A simple data table component for React with TailwindCSS",
   "main": "dist/index.js",
   "scripts": {
