@@ -1,6 +1,6 @@
-import classNames from "classnames";
+import { useState, useEffect } from "react";
 import { DataTableProps } from "./types";
-import { useState } from "react";
+import classNames from "classnames";
 import Spinner from "./components/Spinner";
 
 export default function DataTable<T>({
@@ -16,25 +16,53 @@ export default function DataTable<T>({
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState<T[]>(data);
   const [searchValues, setSearchValues] = useState<Record<string, string>>({});
+  const [debouncedSearchValues, setDebouncedSearchValues] = useState<
+    Record<string, string>
+  >({});
+
+  // Debounce effect
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValues(searchValues);
+    }, 300); // 300ms debounce delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValues]);
+
+  useEffect(() => {
+    // Apply search logic when debounced values change
+    let updatedData = data;
+
+    columns.forEach((column) => {
+      const accessor = column.accessor as string;
+      const searchValue = debouncedSearchValues[accessor];
+
+      if (column.searchable && searchValue) {
+        if (column.onSearch) {
+          // Call the column-specific onSearch function
+          column.onSearch(column.accessor, searchValue);
+        } else {
+          // Default filtering logic
+          updatedData = updatedData.filter((item) =>
+            String(item[column.accessor as keyof T])
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+          );
+        }
+      }
+    });
+
+    setFilteredData(updatedData);
+
+    if (onPageChange) {
+      onPageChange(1); // Reset to first page on search
+    }
+  }, [debouncedSearchValues, columns, data, onPageChange]);
 
   const handleSearchChange = (accessor: string, value: string) => {
     setSearchValues((prev) => ({ ...prev, [accessor]: value }));
-    const column = columns.find((col) => col.accessor === accessor);
-    if (column && column.onSearch) {
-      column.onSearch(accessor as keyof T, value);
-    } else {
-      const filteredData = data.filter((item) =>
-        String(item[accessor as keyof T])
-          .toLowerCase()
-          .includes(value.toLowerCase())
-      );
-      setSearchValues((prev) => ({ ...prev, [accessor]: value }));
-      if (onPageChange) {
-        onPageChange(1); // Reset to first page on search
-      }
-      // Update the data state with filteredData if needed
-      setFilteredData(filteredData);
-    }
   };
 
   const handlePageChange = (page: number) => {
